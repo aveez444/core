@@ -250,24 +250,24 @@ export const AuthProvider = ({ children }) => {
 
   // Login function
   const login = useCallback(async (credentials) => {
-    dispatch({ type: AUTH_ACTIONS.SET_LOADING, payload: true });
-    dispatch({ type: AUTH_ACTIONS.CLEAR_ERROR });
-    
     try {
+      dispatch({ type: AUTH_ACTIONS.SET_LOADING, payload: true });
+      dispatch({ type: AUTH_ACTIONS.CLEAR_ERROR });
+  
       const response = await apiService.login(credentials);
-      
+  
       if (response.success) {
-        const { user } = response;
-        
-        // Store user data in localStorage (session is handled by cookies)
+        const user = response.user;  // Now from response.user
+        const token = null;  // Session auth, no token
+  
         localStorage.setItem('user', JSON.stringify(user));
         localStorage.setItem('lastActivity', Date.now().toString());
-        
+  
         dispatch({ 
           type: AUTH_ACTIONS.LOGIN_SUCCESS, 
-          payload: { user, token: 'session' } // Use placeholder token for session auth
+          payload: { user, token } 
         });
-        
+  
         toast.success(`Welcome back, ${user.first_name || user.username}!`);
         return { success: true };
       } else {
@@ -283,7 +283,8 @@ export const AuthProvider = ({ children }) => {
       return { success: false, error: errorMessage };
     }
   }, []);
-
+  
+  
   // Update user profile
   const updateUser = async (userData) => {
     try {
