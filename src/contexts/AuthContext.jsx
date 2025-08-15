@@ -131,21 +131,20 @@ export const AuthProvider = ({ children }) => {
   // Logout function
   const logout = useCallback(async (showToast = true) => {
     try {
-      if (state.isAuthenticated) {
-        await apiService.logout();
-      }
+        if (state.isAuthenticated) {
+            await apiService.logout();
+        }
     } catch (error) {
-      console.error('Logout API call failed:', error);
+        console.error('Logout API call failed:', error);
     } finally {
-      clearStoredAuth();
-      dispatch({ type: AUTH_ACTIONS.LOGOUT });
-      if (showToast) {
-        toast.info('You have been logged out successfully');
-      }
-      // Refresh CSRF token after logout
-      await initializeCSRF();  // Re-init to get a new token for the next login
+        clearStoredAuth();
+        dispatch({ type: AUTH_ACTIONS.LOGOUT });
+        if (showToast) {
+            toast.info('You have been logged out successfully');
+        }
+        await apiService.initializeCSRF(); // Refresh CSRF token
     }
-  }, [state.isAuthenticated]);
+}, [state.isAuthenticated]);
 
   // Setup session timeout monitoring
   const setupSessionTimeout = useCallback(() => {

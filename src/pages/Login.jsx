@@ -21,10 +21,12 @@ const Login = () => {
   // Redirect if already authenticated
   useEffect(() => {
     if (isAuthenticated) {
-      const from = location.state?.from || '/app';
-      navigate(from, { replace: true });
+        const from = location.state?.from || '/app';
+        navigate(from, { replace: true });
     }
-  }, [isAuthenticated, navigate, location]);
+    clearError();
+    // Avoid fetching notifications here
+}, [isAuthenticated, navigate, location, clearError]);
 
   // Clear errors when component unmounts
   useEffect(() => {

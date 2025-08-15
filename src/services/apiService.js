@@ -55,34 +55,19 @@ const api = axios.create({
 
 // Request interceptor
 api.interceptors.request.use(
-  (config) => {
-    // For session-based authentication, we don't need to add Authorization header
-    // The session cookie will be sent automatically due to withCredentials: true
-    
-    // Add CSRF token for POST, PUT, DELETE requests
-    if (['post', 'put', 'delete', 'patch'].includes(config.method?.toLowerCase())) {
-      const csrfToken = getCSRFToken();
-      if (csrfToken) {
-        config.headers['X-CSRFToken'] = csrfToken;
+  async (config) => {
+      if (['post', 'put', 'delete', 'patch'].includes(config.method?.toLowerCase()) && !config.url.includes('/api/auth/login/')) {
+          const csrfToken = await initializeCSRF();
+          if (csrfToken) {
+              config.headers['X-CSRFToken'] = csrfToken;
+          }
       }
-    }
-    
-    // Update last activity
-    localStorage.setItem('lastActivity', Date.now().toString());
-    
-    // Log request in development
-    if (import.meta.env.DEV) {
-      console.log(`🚀 API Request: ${config.method?.toUpperCase()} ${config.url}`, {
-        data: config.data,
-        params: config.params,
-      });
-    }
-    
-    return config;
+      localStorage.setItem('lastActivity', Date.now().toString());
+      return config;
   },
   (error) => {
-    console.error('Request interceptor error:', error);
-    return Promise.reject(error);
+      console.error('Request interceptor error:', error);
+      return Promise.reject(error);
   }
 );
 

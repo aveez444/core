@@ -61,8 +61,18 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
-    fetchAnalyticsData();
-  }, []);
+    if (isAuthenticated) {
+        fetchAnalyticsData();
+        apiService.getNotifications().then(data => {
+            setNotifications(data.notifications);
+            setUnreadCount(data.unread_count);
+        }).catch(error => {
+            if (error.response?.status === 500) {
+                toast.error('Failed to load notifications');
+            }
+        });
+    }
+}, [isAuthenticated]);
 
   // Set greeting based on time
   useEffect(() => {
