@@ -23,20 +23,22 @@ const getCSRFToken = () => {
 };
 
 // Initialize CSRF token by fetching it from the server
-const initializeCSRF = async () => {
+export const initializeCSRF = async () => {
   try {
     console.log('🔍 Initializing CSRF token...');
     const response = await axios.get(`${API_BASE_URL}/api/auth/csrf/`, { withCredentials: true });
     console.log('✅ CSRF token initialized successfully');
-    return response.data;
+    // Store the token if needed (e.g., in a variable or localStorage, but avoid localStorage for security)
+    return response.data.csrfToken;
   } catch (error) {
     console.error('❌ Failed to initialize CSRF token:', error);
     throw error;
   }
 };
 
-// Initialize CSRF token when the module loads
-let csrfInitPromise = initializeCSRF();
+// Call it initially
+let csrfTokenPromise = initializeCSRF();
+export const getCSRFTokenAsync = () => csrfTokenPromise;
 
 // Export promise for other components to wait for CSRF initialization
 export const waitForCSRFInit = () => csrfInitPromise;

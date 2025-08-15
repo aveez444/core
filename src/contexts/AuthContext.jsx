@@ -131,7 +131,6 @@ export const AuthProvider = ({ children }) => {
   // Logout function
   const logout = useCallback(async (showToast = true) => {
     try {
-      // Call logout API if user is authenticated
       if (state.isAuthenticated) {
         await apiService.logout();
       }
@@ -143,6 +142,8 @@ export const AuthProvider = ({ children }) => {
       if (showToast) {
         toast.info('You have been logged out successfully');
       }
+      // Refresh CSRF token after logout
+      await initializeCSRF();  // Re-init to get a new token for the next login
     }
   }, [state.isAuthenticated]);
 
