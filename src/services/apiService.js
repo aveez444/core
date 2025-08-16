@@ -22,26 +22,6 @@ const getCSRFToken = () => {
   return cookieValue;
 };
 
-// Initialize CSRF token by fetching it from the server
-export const initializeCSRF = async () => {
-  try {
-    console.log('🔍 Initializing CSRF token...');
-    const response = await axios.get(`${API_BASE_URL}/api/auth/csrf/`, { withCredentials: true });
-    console.log('✅ CSRF token initialized successfully');
-    // Store the token if needed (e.g., in a variable or localStorage, but avoid localStorage for security)
-    return response.data.csrfToken;
-  } catch (error) {
-    console.error('❌ Failed to initialize CSRF token:', error);
-    throw error;
-  }
-};
-
-// Call it initially
-let csrfTokenPromise = initializeCSRF();
-export const getCSRFTokenAsync = () => csrfTokenPromise;
-
-// Export promise for other components to wait for CSRF initialization
-export const waitForCSRFInit = () => csrfInitPromise;
 
 // Create axios instance
 const api = axios.create({
@@ -55,13 +35,7 @@ const api = axios.create({
 
 // Request interceptor
 api.interceptors.request.use(
-  async (config) => {
-      if (['post', 'put', 'delete', 'patch'].includes(config.method?.toLowerCase()) && !config.url.includes('/api/auth/login/')) {
-          const csrfToken = await initializeCSRF();
-          if (csrfToken) {
-              config.headers['X-CSRFToken'] = csrfToken;
-          }
-      }
+  (config) => {
       localStorage.setItem('lastActivity', Date.now().toString());
       return config;
   },

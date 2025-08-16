@@ -142,7 +142,6 @@ export const AuthProvider = ({ children }) => {
         if (showToast) {
             toast.info('You have been logged out successfully');
         }
-        await apiService.initializeCSRF(); // Refresh CSRF token
     }
 }, [state.isAuthenticated]);
 
