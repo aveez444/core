@@ -142,6 +142,13 @@ export const AuthProvider = ({ children }) => {
         if (showToast) {
             toast.info('You have been logged out successfully');
         }
+        // Clear session cookies for all relevant paths/domains
+        document.cookie = 'sessionid=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; domain=.pythonanywhere.com; secure; samesite=none';
+        document.cookie = 'sessionid=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/;';
+        localStorage.clear();
+        sessionStorage.clear();
+        // Force reload to clear any cached state
+        window.location.assign('/login');
     }
 }, [state.isAuthenticated]);
 

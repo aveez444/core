@@ -133,24 +133,24 @@ api.interceptors.response.use(
 
 // API Service object
 export const apiService = {
-  // Authentication endpoints
   login: async (credentials) => {
-    try {
-      const response = await api.post('/api/auth/login/', credentials);
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
+      try {
+          const response = await api.post('/api/auth/login/', credentials);
+          return response.data;
+      } catch (error) {
+          console.error('Login error:', error);
+          throw error;
+      }
   },
 
   logout: async () => {
     try {
-      await api.post('/api/auth/logout/');
+        await api.post('/api/auth/logout/');
     } catch (error) {
-      console.error('Logout error:', error);
-      // Don't throw error for logout
+        console.error('Logout error:', error);
+        throw error;
     }
-  },
+},
 
   register: async (userData) => {
     try {
