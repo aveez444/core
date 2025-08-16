@@ -33,7 +33,7 @@ import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
-  const { user, getSubscription } = useAuth();
+  const { user, getSubscription, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const [analytics, setAnalytics] = useState(null);
   const [loading, setLoading] = useState(true);
